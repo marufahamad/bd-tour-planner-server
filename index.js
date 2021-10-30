@@ -79,8 +79,31 @@ async function run() {
 
         })
 
-        // update booking status in API
+        // get a single booking from API
+        app.get('/bookings/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const booking = await bookingsCollection.findOne(query);
+            res.send(booking);
+        })
 
+        // update status in API
+        app.put('/bookings/:id', async (req, res) => {
+            const id = req.params.id;
+            const updatedBooking = req.body;
+            const filter = { _id: ObjectId(id) };
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: {
+                    status: "Approved"
+                },
+            };
+            const result = await bookingsCollection.updateOne(filter, updateDoc, options);
+            console.log("updating user:", req);
+            res.json(result);
+
+
+        })
 
         // delete single booking API
 
